@@ -1,0 +1,22 @@
+# Python cache
+*.pyc
+
+# OS X temporary metadata
+._*
+*.DS_Store
+
+# Wiki page
+wiki/
+
+# Results
+output/
+
+# environment
+py3/ 
+
+# test data
+imgs/ 
+README.md
+
+# experiments
+experiments/
