@@ -29,10 +29,13 @@ class MultiResGRUNet(Net):
         n_gru_vox = [4, 8, 16, 32]
 
         n_convfilter = [8, 16, 32, 64, 128]
-        n_fc_filters = [256]
+        n_fc_filters = [32, 64, 128, 256]
         n_deconvfilter = [128, 64, 32, 16, 2]
         input_shape = (self.batch_size, 3, img_w, img_h)
-        fc_shape = (self.batch_size, n_fc_filters[0])
+        fc_shape5 = (self.batch_size, n_fc_filters[0])
+        fc_shape4 = (self.batch_size, n_fc_filters[1])
+        fc_shape3 = (self.batch_size, n_fc_filters[2])
+        fc_shape2 = (self.batch_size, n_fc_filters[3])
 
         # To define the weights, define the net structure first
         x = InputLayer(input_shape)
@@ -63,13 +66,13 @@ class MultiResGRUNet(Net):
         fc5 = TensorProductLayer(flat5, n_fc_filters[0])
 
         flat4 = FlattenLayer(pool4)
-        fc4 = TensorProductLayer(flat4, n_fc_filters[0])
+        fc4 = TensorProductLayer(flat4, n_fc_filters[1])
 
         flat3 = FlattenLayer(pool3)
-        fc3 = TensorProductLayer(flat3, n_fc_filters[0])
+        fc3 = TensorProductLayer(flat3, n_fc_filters[2])
 
         flat2 = FlattenLayer(pool2)
-        fc2 = TensorProductLayer(flat2, n_fc_filters[0])
+        fc2 = TensorProductLayer(flat2, n_fc_filters[3])
 
         # flat1 = FlattenLayer(pool1)
         # fc1 = TensorProductLayer(flat1, n_fc_filters[0])
@@ -199,7 +202,7 @@ class MultiResGRUNet(Net):
         # out_1 = s_encoder[4]
 
         def decode_recurrence_5(x_curr, prev_s_tensor, prev_in_gate_tensor):
-            x_curr_ = InputLayer(fc_shape, x_curr)
+            x_curr_ = InputLayer(fc_shape5, x_curr)
             prev_s_5_ = InputLayer(s_shape_5, prev_s_tensor)
             t_x_s_update_5_ = FCConv3DLayer(prev_s_5_,
                                             x_curr_, (n_deconvfilter[0], n_deconvfilter[0], 3, 3, 3),
@@ -240,7 +243,7 @@ class MultiResGRUNet(Net):
 
         def decode_recurrence_4(x_curr, prev_s_tensor, prev_in_gate_tensor):
 
-            x_curr_ = InputLayer(fc_shape, x_curr)
+            x_curr_ = InputLayer(fc_shape4, x_curr)
             prev_s_4_ = InputLayer(s_shape_4, prev_s_tensor)
             t_x_s_update_4_ = FCConv3DLayer(prev_s_4_,
                                             x_curr_, (n_deconvfilter[1], n_deconvfilter[1], 3, 3, 3),
@@ -285,7 +288,7 @@ class MultiResGRUNet(Net):
         print("conv_out_4: ", conv_out4.output)
 
         def decode_recurrence_3(x_curr, prev_s_tensor, prev_in_gate_tensor):
-            x_curr_ = InputLayer(fc_shape, x_curr)
+            x_curr_ = InputLayer(fc_shape3, x_curr)
             prev_s_3_ = InputLayer(s_shape_3, prev_s_tensor)
             t_x_s_update_3_ = FCConv3DLayer(prev_s_3_,
                                             x_curr_, (n_deconvfilter[2], n_deconvfilter[2], 3, 3, 3),
@@ -325,7 +328,7 @@ class MultiResGRUNet(Net):
         print("conv_out_3: ", conv_out3.output)
 
         def decode_recurrence_2(x_curr, prev_s_tensor, prev_in_gate_tensor):
-            x_curr_ = InputLayer(fc_shape, x_curr)
+            x_curr_ = InputLayer(fc_shape2, x_curr)
             prev_s_2_ = InputLayer(s_shape_2, prev_s_tensor)
             t_x_s_update_2_ = FCConv3DLayer(prev_s_2_,
                                             x_curr_, (n_deconvfilter[3], n_deconvfilter[3], 3, 3, 3),
